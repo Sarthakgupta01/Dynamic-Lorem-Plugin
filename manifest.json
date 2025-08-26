@@ -1,7 +1,16 @@
 {
-    "name": "Dynamic Lorem Ipsum with Tone",
-    "id": "dynamic-lorem-001",
+    "name": "Dynamic Lorem Ipsum",
+    "id": "dynamic-lorem-ipsum",
     "api": "1.0.0",
     "main": "code.js",
-    "ui": "ui.html"
+    "ui": "ui.html",
+    "editorType": [
+        "figma"
+    ],
+    "relaunchButtons": [
+        {
+            "command": "generate",
+            "name": "Generate Text"
+        }
+    ]
 }
