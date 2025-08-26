@@ -1,0 +1,36 @@
+body {
+    font-family: Arial, sans-serif;
+    padding: 10px;
+    width: 230px;
+}
+
+h3 {
+    margin-top: 0;
+    font-size: 16px;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 3px;
+}
+
+select,
+button {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 5px;
+    font-size: 14px;
+}
+
+button {
+    background-color: #18a0fb;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+button:hover {
+    background-color: #0d8adf;
+}

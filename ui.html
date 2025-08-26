@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="ui.css">
+</head>
+
+<body>
+    <h3>Dynamic Text Generator</h3>
+
+    <label for="tone">Select Tone:</label>
+    <select id="tone">
+        <option value="Professional">Professional</option>
+        <option value="Playful">Playful</option>
+        <option value="Marketing">Marketing</option>
+    </select>
+
+    <button id="generate">Generate Text</button>
+
+    <script>
+        document.getElementById('generate').onclick = () => {
+            const tone = document.getElementById('tone').value;
+            parent.postMessage({ pluginMessage: { type: 'generate-text', tone } }, '*');
+        };
+    </script>
+</body>
+
+</html>
