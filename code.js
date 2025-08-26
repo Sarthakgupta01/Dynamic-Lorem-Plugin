@@ -1,4 +1,5 @@
-figma.showUI(__html__, { width: 250, height: 200 });
+// code.js
+figma.showUI(__html__, { width: 300, height: 200 });
 
 // Predefined text templates
 const tones = {
@@ -19,7 +20,7 @@ const tones = {
     ]
 };
 
-figma.ui.onmessage = msg => {
+figma.ui.onmessage = async msg => {
     if (msg.type === 'generate-text') {
         const nodes = figma.currentPage.selection;
 
@@ -40,7 +41,16 @@ figma.ui.onmessage = msg => {
 
         for (const node of nodes) {
             if (node.type === 'TEXT') {
-                node.characters = randomText;
+                try {
+                    // Load the font of the node before setting text
+                    await figma.loadFontAsync(node.fontName);
+
+                    // Now safe to set characters
+                    node.characters = randomText;
+                } catch (err) {
+                    console.error("Font load failed:", err);
+                    figma.notify("⚠️ Failed to load font for one text layer.");
+                }
             }
         }
 
