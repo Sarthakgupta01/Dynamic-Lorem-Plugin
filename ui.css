@@ -1,26 +1,29 @@
 body {
     font-family: Arial, sans-serif;
     padding: 10px;
-    width: 230px;
+    width: 330px;
 }
 
-h3 {
-    margin-top: 0;
-    font-size: 16px;
+h3,
+h4 {
+    margin: 5px 0;
+    font-size: 14px;
 }
 
 label {
     display: block;
     margin-top: 10px;
     margin-bottom: 3px;
+    font-size: 12px;
 }
 
 select,
+input,
 button {
     width: 100%;
-    margin-bottom: 10px;
     padding: 5px;
-    font-size: 14px;
+    margin-bottom: 10px;
+    font-size: 13px;
 }
 
 button {
@@ -33,4 +36,22 @@ button {
 
 button:hover {
     background-color: #0d8adf;
+}
+
+#generated-list {
+    max-height: 150px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.generated-item {
+    padding: 3px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+.generated-item:hover {
+    background-color: #f0f0f0;
 }

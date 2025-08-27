@@ -1,5 +1,5 @@
 // code.js
-figma.showUI(__html__, { width: 300, height: 200 });
+figma.showUI(__html__, { width: 350, height: 400 });
 
 // Predefined text templates
 const tones = {
@@ -20,6 +20,19 @@ const tones = {
     ]
 };
 
+// Function to adjust text length
+function adjustTextLength(text, targetWords) {
+    let words = text.split(' ');
+    if (words.length > targetWords) {
+        return words.slice(0, targetWords).join(' ');
+    } else {
+        while (words.length < targetWords) {
+            words = words.concat(words);
+        }
+        return words.slice(0, targetWords).join(' ');
+    }
+}
+
 figma.ui.onmessage = async msg => {
     if (msg.type === 'generate-text') {
         const nodes = figma.currentPage.selection;
@@ -30,30 +43,53 @@ figma.ui.onmessage = async msg => {
         }
 
         const selectedTone = msg.tone;
-        const textOptions = tones[selectedTone];
+        const targetWords = msg.wordCount || 10;
 
+        const textOptions = tones[selectedTone];
         if (!textOptions) {
             figma.notify("❌ Invalid tone selected!");
             return;
         }
 
-        const randomText = textOptions[Math.floor(Math.random() * textOptions.length)];
+        // Generate text and adjust length
+        const baseText = textOptions[Math.floor(Math.random() * textOptions.length)];
+        const finalText = adjustTextLength(baseText, targetWords);
 
+        // Collect unique fonts
+        const fontMap = {};
+        for (const node of nodes) {
+            if (node.type === 'TEXT') {
+                const fontKey = JSON.stringify(node.fontName);
+                fontMap[fontKey] = node.fontName;
+            }
+        }
+
+        // Load all fonts once
+        for (const font of Object.values(fontMap)) {
+            try {
+                await figma.loadFontAsync(font);
+            } catch (e) {
+                console.error("Font load failed:", e);
+            }
+        }
+
+        // Set text preserving layout
         for (const node of nodes) {
             if (node.type === 'TEXT') {
                 try {
-                    // Load the font of the node before setting text
-                    await figma.loadFontAsync(node.fontName);
-
-                    // Now safe to set characters
-                    node.characters = randomText;
+                    const originalResize = node.textAutoResize;
+                    node.characters = finalText;
+                    node.textAutoResize = originalResize;
                 } catch (err) {
-                    console.error("Font load failed:", err);
-                    figma.notify("⚠️ Failed to load font for one text layer.");
+                    console.error("Failed to set text:", err);
+                    figma.notify("⚠️ Failed to set text for one text layer.");
                 }
             }
         }
 
         figma.notify(`✅ Inserted ${selectedTone} text!`);
+
+        // Send the generated text back to UI for copy panel
+        figma.ui.postMessage({ type: 'show-generated', text: finalText });
     }
 };

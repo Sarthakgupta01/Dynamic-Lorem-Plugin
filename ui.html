@@ -15,12 +15,35 @@
         <option value="Marketing">Marketing</option>
     </select>
 
+    <label for="wordCount">Word Count:</label>
+    <input type="number" id="wordCount" min="1" max="100" value="10">
+
     <button id="generate">Generate Text</button>
 
+    <h4>Generated Texts (Click to Copy)</h4>
+    <div id="generated-list"></div>
+
     <script>
-        document.getElementById('generate').onclick = () => {
-            const tone = document.getElementById('tone').value;
-            parent.postMessage({ pluginMessage: { type: 'generate-text', tone } }, '*');
+        const generateBtn = document.getElementById('generate');
+        const toneSelect = document.getElementById('tone');
+        const wordInput = document.getElementById('wordCount');
+        const generatedList = document.getElementById('generated-list');
+
+        generateBtn.onclick = () => {
+            const tone = toneSelect.value;
+            const wordCount = parseInt(wordInput.value) || 10;
+            parent.postMessage({ pluginMessage: { type: 'generate-text', tone, wordCount } }, '*');
+        };
+
+        window.onmessage = (event) => {
+            const msg = event.data.pluginMessage;
+            if (msg.type === 'show-generated') {
+                const div = document.createElement('div');
+                div.textContent = msg.text;
+                div.className = 'generated-item';
+                div.onclick = () => navigator.clipboard.writeText(msg.text);
+                generatedList.prepend(div);
+            }
         };
     </script>
 </body>
